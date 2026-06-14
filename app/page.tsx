@@ -9,25 +9,39 @@ import { ImageContext } from "../contexts/Context";
 
 export default function Page() {
   const [searchImage, setSearchImage] = useState("");
-  const { response, isLoading, error, fetchData } = useAxios(`https://api.unsplash.com/search/photos?page=1&query=office&client_id=dOcXjWVIV44X0KWyME3R0F-Gmal_HTIHgGR1IhEibM0`);
+  const [page, setPage] = useState(1);
+
+  const {
+    response,
+    isLoading,
+    error,
+    fetchData,
+    totalPages,
+  } = useAxios(
+    `https://api.unsplash.com/search/photos?page=1&per_page=20&query=office&client_id=dOcXjWVIV44X0KWyME3R0F-Gmal_HTIHgGR1IhEibM0`
+  );
 
   const value = {
     response,
     isLoading,
     error,
     fetchData,
+    totalPages,
+
     searchImage,
-    setSearchImage
-  }
+    setSearchImage,
+
+    page,
+    setPage,
+  };
 
   return (
-    <>
-      <ImageContext.Provider value={value}>
-        <Header>
-          <SearchField />
-        </Header>
-        <Images />
-      </ImageContext.Provider>
-    </>
-  )
+    <ImageContext.Provider value={value}>
+      <Header>
+        <SearchField />
+      </Header>
+
+      <Images />
+    </ImageContext.Provider>
+  );
 }

@@ -6,19 +6,28 @@ import { ImageContext } from "../contexts/Context";
 const SearchField = () => {
   const [searchValue, setSearchValue] = useState("");
 
-  const { fetchData, setSearchImage } = useContext(ImageContext);
+  const {
+    fetchData,
+    setSearchImage,
+    setPage,
+  } = useContext(ImageContext);
 
   const handleSearch = () => {
-    if (!searchValue) return;
+    if (!searchValue.trim()) return;
 
-    const url = `https://api.unsplash.com/search/photos?page=1&query=${searchValue}&client_id=dOcXjWVIV44X0KWyME3R0F-Gmal_HTIHgGR1IhEibM0`;
+    setSearchImage(searchValue);
+    setPage(1);
+
+    const url = `https://api.unsplash.com/search/photos?page=1&per_page=20&query=${searchValue}&client_id=dOcXjWVIV44X0KWyME3R0F-Gmal_HTIHgGR1IhEibM0`;
 
     fetchData(url);
-    setSearchImage(searchValue);
+
     setSearchValue("");
   };
 
-  const handleEnterSearch = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleEnterSearch = (
+    e: KeyboardEvent<HTMLInputElement>
+  ) => {
     if (e.key === "Enter") {
       handleSearch();
     }
@@ -29,7 +38,9 @@ const SearchField = () => {
       <input
         type="search"
         value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        onChange={(e) =>
+          setSearchValue(e.target.value)
+        }
         onKeyDown={handleEnterSearch}
         placeholder="Search Anything..."
         className="bg-gray-50 border border-gray-300 text-sm w-full indent-2 p-2.5 outline-none focus:border-blue-500 focus:ring-2 rounded-tl rounded-bl"

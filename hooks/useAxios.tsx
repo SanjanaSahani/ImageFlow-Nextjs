@@ -6,7 +6,8 @@ import { useEffect, useState, useCallback } from "react";
 const useAxios = (url: string) => {
   const [response, setResponse] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState("");
+  const [totalPages, setTotalPages] = useState(0);
 
   const fetchData = useCallback(async (requestUrl: string) => {
     try {
@@ -14,10 +15,16 @@ const useAxios = (url: string) => {
       setError("");
 
       const res = await axios.get(requestUrl);
-
-      setResponse(res.data.results);
+      setResponse(res.data.results || []);
+      setTotalPages(res.data.total_pages || 0);
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
+      console.error("Axios Error:", err);
+
+      setError(
+        err.response?.data?.errors?.[0] ||
+          err.message ||
+          "Something went wrong"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -33,6 +40,7 @@ const useAxios = (url: string) => {
     response,
     isLoading,
     error,
+    totalPages,
     fetchData,
   };
 };
